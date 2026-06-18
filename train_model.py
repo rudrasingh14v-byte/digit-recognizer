@@ -11,8 +11,14 @@ from tensorflow import keras
 #dividing each of the pixel value with 255, to cast the value within the range [0,1]
 #this makes the learning process for the neural network easier
 #we use array broadcasting as a shorthand way to do normalization
+
+x_validation = x_test[:1000]
+y_validation = y_test[:1000]
+x_unseen_test = x_test[1000:]
+y_unseen_test = y_test[1000:]
 x_train = x_train/255
-x_test = x_test/255
+x_validation = x_validation/255
+x_unseen_test = x_unseen_test/255
 
 model = keras.Sequential([keras.layers.Flatten(input_shape=(28,28)), keras.layers.Dense(128, activation='relu'), keras.layers.Dropout(0.2),keras.layers.Dense(10, activation = 'softmax')])
 #This creates a sequence of layers that the data corresponding to a training image would go through
@@ -36,10 +42,10 @@ model.compile(optimizer='adam',loss='sparse_categorical_crossentropy', metrics=[
 print("\n Training the model!")
 
 #training the model
-model.fit(x_train,y_train,epochs = 5, validation_data=(x_test, y_test))
+model.fit(x_train,y_train,epochs = 5, validation_data=(x_validation, y_validation))
 
 #testing the model
-test_loss, test_accuracy = model.evaluate(x_test,y_test,verbose = 2)
+test_loss, test_accuracy = model.evaluate(x_unseen_test,y_unseen_test,verbose = 2)
 print(f"\n Final test accuracy: {test_accuracy * 100:.2f}%")
 
 #saving the model
